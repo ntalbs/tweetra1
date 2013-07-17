@@ -1,0 +1,20 @@
+{
+  "name": "Tweetra1",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "description": "Chrome Extension for Synapsoft Intra1 Tweeter.",
+  "background": {
+    "scripts": ["js/background.js"],
+    "persistent": true
+  },
+  "browser_action": {
+    "default_icon": "images/icon_on.png",
+    "default_title": "Tweetra1",
+    "default_popup": "html/popup.html"
+  },
+  "permissions": [
+		"tabs",
+    "notifications",
+		"http://intra1.synap.co.kr/*"
+  ]
+}

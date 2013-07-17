@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+<head>
+	<link href="/css/style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div id="mainPopup" style="display: none">
+  <div id="form">
+    <form>
+      <input type="hidden" name="recentTimestamp" value="0"/>
+      <div style="color:gray; font-style:italic;">What's happening?</div>
+      <textarea id="tweetMsg" rows="3" onkeypress="checkEnterKey(event)"></textarea>
+      <div style="color:gray;">Shift+Enter or Ctrl+Enter to post your message.</div>
+    </form>
+  </div>
+  <div id="list"></div>
+</div>
+<script src="/js/popup.js" type="text/javascript"></script>
+</body>
+</html>
