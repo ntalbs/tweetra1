@@ -8,7 +8,7 @@
             + '&nbsp;'
             + '<span class="name">{3}</span>'
             + '&nbsp;'
-            + '<a class="deleteLink" userId={2} href="#" onclick="deleteTweet({0})">'
+            + '<a class="deleteLink" userId={2} href="#">'
               + '<img class="trashcan" src="http://intra1.synap.co.kr/season2/images/trashcan_icon.gif" alt="delete"/>'
             + '</a>'
           + '</div>'
@@ -17,9 +17,9 @@
         + '</div>'
       + '</div>';
 
-  document.addEventListener("keydown", checkEnterKey);
   tweet();
-
+  document.addEventListener("keydown", checkEnterKey);
+ 
   function tweet() {
     var req = new XMLHttpRequest();
     req.open("POST", "http://intra1.synap.co.kr/season2/tweet/index.ss", true);
@@ -82,8 +82,9 @@
   }
 
   function deleteTweet(id) {
-    if(!confirm("Are you sure you want to delete this tweet?"))
+    if(!confirm("Are you sure you want to delete this tweet?")) {
       return;
+    }
     var req = new XMLHttpRequest();
     req.open("POST", "http://intra1.synap.co.kr/season2/tweet/index.ss", true);
     req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -102,6 +103,10 @@
       var linkUserId = deleteLinks[i].getAttribute("userId");
       if (linkUserId != loginUserId) {
         deleteLinks[i].style.display = "none";
+      } else {
+        deleteLinks[i].onclick = function(e) {
+          deleteTweet(e.srcElement.parentNode.parentNode.parentNode.parentNode.id);
+        };
       }
     }
   }
