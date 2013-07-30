@@ -28,7 +28,7 @@ function tweet() {
       addDeleteButton();
       updateMrtTs();
       chrome.browserAction.setBadgeText({text:""});
-      chrome.browserAction.setIcon({path: "icon_on.png"});
+      chrome.browserAction.setIcon({path: "/images/icon_on.png"});
     } catch (x) {
       showLoginMsg();
     }

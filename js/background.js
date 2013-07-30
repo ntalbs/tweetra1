@@ -3,7 +3,7 @@ var pollIntervalMax = 1000 * 60 * 60;  // 1 hour
 var requestFailureCount = 0;           // used for exponential backoff
 
 function init() {
-  chrome.browserAction.setIcon({path: "icon_on.png"});
+  chrome.browserAction.setIcon({path: "/images/icon_on.png"});
   chrome.tabs.onUpdated.addListener(function (tabId, changeInfo) {
     if (changeInfo.url && isSynapUrl(changeInfo.url)) {
     	updateTweetCount(getMrtTs());
