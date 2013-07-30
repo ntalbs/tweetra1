@@ -150,8 +150,7 @@ function getTsStr(dateStr) {
 }
 
 function checkEnterKey(e) {
-  if ((e.keyCode == 10 && e.ctrlKey) || (e.keyCode == 13 && e.shiftKey)) {
-		// Ctrl+Enter or Shift+Enter
+  if (e.keyCode == 13 && (e.shiftKey || e.ctrlKey)) { // Ctrl+Enter or Shift+Enter
     tweet();
     var t = document.getElementById("tweetMsg");
     t.blur();
@@ -159,4 +158,5 @@ function checkEnterKey(e) {
   }
 }
 
+document.addEventListener("keydown", checkEnterKey);
 tweet();
