@@ -6,7 +6,7 @@ function init() {
   chrome.browserAction.setIcon({path: "/images/icon_on.png"});
   chrome.tabs.onUpdated.addListener(function (tabId, changeInfo) {
     if (changeInfo.url && isSynapUrl(changeInfo.url)) {
-    	updateTweetCount(getMrtTs());
+      updateTweetCount(getMrtTs());
     }
   });
   startRequest();

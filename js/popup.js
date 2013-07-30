@@ -22,8 +22,8 @@ function tweet() {
   req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   req.onload = function () {
     try {
-    	var resJson = JSON.parse(req.responseText);
-    	localStorage["userId"] = resJson.userId;
+      var resJson = JSON.parse(req.responseText);
+      localStorage["userId"] = resJson.userId;
       showTweets(resJson.msgList);
       addDeleteButton();
       updateMrtTs();
@@ -69,11 +69,11 @@ function updateMrtTs() {
 function showLoginMsg() {
   document.body.innerHTML
     = '<div style="text-align:center;">'
-      + 'Login required.'
-      + 'Visit <b><a id="loginLink" href="http://intra1.synap.co.kr/season2/login.ss?cmd=loginForm">Synapsoft Intra1</a></b> and Login, first.'
+    + 'Login required.'
+    + 'Visit <b><a id="loginLink" href="http://intra1.synap.co.kr/season2/login.ss?cmd=loginForm">Synapsoft Intra1</a></b> and Login, first.'
     + '</div>';
   document.getElementById("loginLink").onclick = function(e) {
-	  chrome.tabs.create({url: e.srcElement.href});
+	chrome.tabs.create({url: e.srcElement.href});
   };
 }
 
@@ -87,7 +87,7 @@ function deleteTweet(id) {
     var tweet = document.getElementById(id);
     tweet.parentNode.removeChild(tweet);
   };
-	var params = "cmd=delete&timestamp="+id;
+  var params = "cmd=delete&timestamp="+id;
   req.send(params);
 }
 
@@ -108,12 +108,12 @@ function defaultIcon() {
 
 function getTweetHtml(tweet) {
   return String.format(tweetFormatStr,
-    tweet.timestamp,
-    getPictureUrl(tweet.id),
-    tweet.id,
-    tweet.userName,
-    tweet.blahblah.replace(/(\r\n|\n)/g, "<br/>"),
-    getTsStr(tweet.date));
+                       tweet.timestamp,
+                       getPictureUrl(tweet.id),
+                       tweet.id,
+                       tweet.userName,
+                       tweet.blahblah.replace(/(\r\n|\n)/g, "<br/>"),
+                       getTsStr(tweet.date));
 }
 
 function getPictureUrl(id) {
@@ -127,7 +127,7 @@ String.format = function(text) {
   var tokenCount = arguments.length - 2;
   for( var token = 0; token <= tokenCount; token++ ) {
     text = text.replace(new RegExp( "\\{" + token + "\\}", "gi" ),
-												arguments[ token + 1 ].replace("$", "$$$$") );
+						arguments[ token + 1 ].replace("$", "$$$$") );
   }
   return text;
 };
