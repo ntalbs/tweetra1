@@ -17,18 +17,32 @@
         + '</div>'
       + '</div>';
 
-  tweet();
-  document.addEventListener("keydown", checkEnterKey);
- 
-  function tweet() {
+  loadTweets();
+  document.addEventListener("keydown", function(e) {
+    if (e.srcElement.getAttribute("id") !== "tweetMsg") { // event src is not msg textarea
+      return;
+    }
+    if (e.keyCode !== 13 || !(e.shiftKey || e.ctrlKey)) { // not Ctrl+Enter or Shift+Enter
+      return;
+    }
+
+    tweet();
+  });
+
+  function sendRequset(params, callback) {
     var req = new XMLHttpRequest();
     req.open("POST", "http://intra1.synap.co.kr/season2/tweet/index.ss", true);
     req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    req.onload = function () {
+    req.onload = callback;
+    req.send(params);
+  }
+
+  function loadTweets() {
+    sendRequset("blahblah=&recentTimestamp=0", function (e) {
       try {
-        var resJson = JSON.parse(req.responseText);
+        var resJson = JSON.parse(e.srcElement.responseText);
         localStorage["userId"] = resJson.userId;
-        showTweets(resJson.msgList);
+        renderTweetList(resJson.msgList);
         addDeleteButton();
         updateMrtTs();
         chrome.browserAction.setBadgeText({text:""});
@@ -36,21 +50,41 @@
       } catch (x) {
         showLoginMsg();
       }
-    };
-
-    var msg, ts;
-    try {
-      msg = document.getElementById("tweetMsg").value; 
-      ts = document.getElementById("list").firstChild.id;
-    } catch (x) {
-      msg = "";
-      ts = "0";
-    }
-    var params = "blahblah="+encodeURIComponent(msg)+"&recentTimestamp="+ts;
-    setTimeout(function(){req.send(params);}, 0);
+    });
+  }
+ 
+  function tweet() {
+    var msg = document.getElementById("tweetMsg").value,
+        ts = document.getElementById("list").firstChild.id,
+        params = "blahblah="+encodeURIComponent(msg)+"&recentTimestamp="+ts;
+    sendRequset(params, function (e) {
+      try {
+        var resJson = JSON.parse(e.srcElement.responseText);
+        localStorage["userId"] = resJson.userId;
+        renderTweet(resJson.msgList[0]);
+        addDeleteButton();
+        updateMrtTs();
+        var t = document.getElementById("tweetMsg");
+        t.blur();
+        t.value = "";
+        chrome.browserAction.setBadgeText({text:""});
+        chrome.browserAction.setIcon({path: "/images/icon_on.png"});
+      } catch (x) {
+        showLoginMsg();
+      }
+    });
   }
 
-  function showTweets(tweets) {
+  function renderTweet(tweet) {
+    var tweetHtml = getTweetHtml(tweet);
+    var container = document.createElement("div");
+    container.innerHTML = tweetHtml;
+    var elTweet = container.firstChild;
+    var list = document.getElementById("list");
+    list.insertBefore(elTweet, list.firstChild);
+  }
+
+  function renderTweetList(tweets) {
     var tweetHtml = [];
     for(var i=0; i<tweets.length; i++) {
       tweetHtml.unshift(getTweetHtml(tweets[i]));
@@ -85,15 +119,11 @@
     if(!confirm("Are you sure you want to delete this tweet?")) {
       return;
     }
-    var req = new XMLHttpRequest();
-    req.open("POST", "http://intra1.synap.co.kr/season2/tweet/index.ss", true);
-    req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    req.onload = function() {
+    var params = "cmd=delete&timestamp="+id;
+    sendRequset(params, function() {
       var tweet = document.getElementById(id);
       tweet.parentNode.removeChild(tweet);
-    };
-    var params = "cmd=delete&timestamp="+id;
-    req.send(params);
+    });
   }
 
   function addDeleteButton() {
@@ -104,9 +134,11 @@
       if (linkUserId != loginUserId) {
         deleteLinks[i].style.display = "none";
       } else {
-        deleteLinks[i].onclick = function(e) {
-          deleteTweet(e.srcElement.parentNode.parentNode.parentNode.parentNode.id);
-        };
+        if(!deleteLinks[i].onclick) {
+          deleteLinks[i].onclick = function(e) {
+            deleteTweet(e.srcElement.parentNode.parentNode.parentNode.parentNode.id);
+          };
+        }
       }
     }
   }
@@ -157,19 +189,5 @@
       var d = date.getDate();
       return (m<10?"0":"") + m + "/" + (d<10?"0":"") + d;
     }
-  }
-
-  function checkEnterKey(e) {
-    if (e.srcElement.getAttribute("id") !== "tweetMsg") { // event src is not msg textarea
-      return;
-    }
-    if (e.keyCode !== 13 || !(e.shiftKey || e.ctrlKey)) { // not Ctrl+Enter or Shift+Enter
-      return;
-    }
-
-    tweet();
-    var t = document.getElementById("tweetMsg");
-    t.blur();
-    t.value = "";
   }
 })();
