@@ -116,13 +116,14 @@
   }
 
   function getTweetHtml(tweet) {
-    return String.format(tweetFormatStr,
-                         tweet.timestamp,
-                         getPictureUrl(tweet.id),
-                         tweet.id,
-                         tweet.userName,
-                         tweet.blahblah.replace(/(\r\n|\n)/g, "<br/>"),
-                         getTsStr(tweet.date));
+    return String.format(
+      tweetFormatStr,
+      tweet.timestamp,
+      getPictureUrl(tweet.id),
+      tweet.id,
+      tweet.userName,
+      tweet.blahblah.replace(/(\r\n|\n)/g, "<br/>"),
+      getTsStr(tweet.date));
   }
 
   function getPictureUrl(id) {
