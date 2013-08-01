@@ -13,8 +13,8 @@
     "default_popup": "html/popup.html"
   },
   "permissions": [
-		"tabs",
+	"tabs",
     "notifications",
-		"http://intra1.synap.co.kr/*"
+	"http://intra1.synap.co.kr/*"
   ]
 }
