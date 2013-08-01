@@ -27,6 +27,14 @@
     tweet();
   });
 
+  document.addEventListener("click", function(e) {
+    if (e.srcElement.getAttribute("class").indexOf("delete-button") < 0) {
+      return;
+    }
+    e.preventDefault();
+    setTimeout(function() { deleteTweet(e.srcElement.parentNode.parentNode.parentNode.id); }, 0);
+  });
+
   function $(id) {
     return document.getElementById(id);
   }
@@ -139,13 +147,6 @@
       var linkUserId = deleteButtons[i].getAttribute("data-userid");
       if (linkUserId != loginUserId) {
         deleteButtons[i].style.display = "none";
-      } else {
-        if(!deleteButtons[i].onclick) {
-          deleteButtons[i].onclick = function(e) {
-            e.preventDefault();
-            setTimeout(function() { deleteTweet(e.srcElement.parentNode.parentNode.parentNode.id); }, 0);
-          };
-        }
       }
     }
   }
