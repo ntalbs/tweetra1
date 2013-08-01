@@ -23,16 +23,13 @@
     if (e.keyCode !== 13 || !(e.shiftKey || e.ctrlKey)) { // not Ctrl+Enter or Shift+Enter
       return;
     }
-
     tweet();
   });
 
   document.addEventListener("click", function(e) {
-    if (e.srcElement.getAttribute("class").indexOf("delete-button") < 0) {
-      return;
+    if (e.srcElement.getAttribute("class").indexOf("delete-button") >= 0) {
+      deleteTweet(e.srcElement.parentNode.parentNode.parentNode.id);
     }
-    e.preventDefault();
-    setTimeout(function() { deleteTweet(e.srcElement.parentNode.parentNode.parentNode.id); }, 0);
   });
 
   function $(id) {
@@ -126,15 +123,11 @@
   }
 
   function deleteTweet(id) {
-    console.log("before confirm...");
-    if(!confirm("Are you sure you want to delete this tweet?")) {
-      console.log("confirm ok. before return.");
-      return;
-    }
-    console.log("delete confirmed. now delete mesg.");
+    // if(!confirm("Are you sure you want to delete this tweet?")) {
+    //   return;
+    // }
     var params = "cmd=delete&timestamp="+id;
     sendRequset(params, function() {
-      console.log("request succeeded. delete.");
       var tweet = $(id);
       tweet.parentNode.removeChild(tweet);
     });
