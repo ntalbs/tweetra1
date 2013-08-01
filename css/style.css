@@ -40,6 +40,7 @@ body {
   border: 0;
   width: 10px;
   height: 12px;
+  cursor: pointer;
 }
 
 .time {

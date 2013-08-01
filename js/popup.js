@@ -8,9 +8,7 @@
             + '&nbsp;'
             + '<span class="name">{3}</span>'
             + '&nbsp;'
-            + '<a class="deleteLink" userId={2} href="#">'
-              + '<img class="trashcan" src="http://intra1.synap.co.kr/season2/images/trashcan_icon.gif" alt="delete"/>'
-            + '</a>'
+            + '<img class="delete-button trashcan" data-userid="{2}" src="http://intra1.synap.co.kr/season2/images/trashcan_icon.gif" alt="delete"/>'
           + '</div>'
         + '<div class="msg">{4}</div>'
         + '<div class="time">{5}</div>'
@@ -19,7 +17,7 @@
 
   loadTweets();
   document.addEventListener("keydown", function(e) {
-    if (e.srcElement.getAttribute("id") !== "tweetMsg") { // event src is not msg textarea
+    if (e.srcElement !== $("tweetMsg")) { // event src is not msg textarea
       return;
     }
     if (e.keyCode !== 13 || !(e.shiftKey || e.ctrlKey)) { // not Ctrl+Enter or Shift+Enter
@@ -28,6 +26,10 @@
 
     tweet();
   });
+
+  function $(id) {
+    return document.getElementById(id);
+  }
 
   function sendRequset(params, callback) {
     var req = new XMLHttpRequest();
@@ -54,8 +56,8 @@
   }
  
   function tweet() {
-    var msg = document.getElementById("tweetMsg").value,
-        ts = document.getElementById("list").firstChild.id,
+    var msg = $("tweetMsg").value,
+        ts = $("list").firstChild.id,
         params = "blahblah="+encodeURIComponent(msg)+"&recentTimestamp="+ts;
     sendRequset(params, function (e) {
       try {
@@ -64,7 +66,7 @@
         renderTweet(resJson.msgList[0]);
         addDeleteButton();
         updateMrtTs();
-        var t = document.getElementById("tweetMsg");
+        var t = $("tweetMsg");
         t.blur();
         t.value = "";
         chrome.browserAction.setBadgeText({text:""});
@@ -80,7 +82,7 @@
     var container = document.createElement("div");
     container.innerHTML = tweetHtml;
     var elTweet = container.firstChild;
-    var list = document.getElementById("list");
+    var list = $("list");
     list.insertBefore(elTweet, list.firstChild);
   }
 
@@ -92,14 +94,14 @@
     if (tweetHtml.length > 50) {
       tweetHtml.splice(50);
     }
-    document.getElementById("list").innerHTML = tweetHtml.join("");
+    $("list").innerHTML = tweetHtml.join("");
     var icons = document.getElementsByClassName("icon");
     for(var i=0; i<icons.length; i++) { icons.item(0).onerror = defaultIcon(); }
-    document.getElementById("mainPopup").style.display = "block";
+    $("mainPopup").style.display = "block";
   }
 
   function updateMrtTs() {
-    var mrt = document.getElementById("list").firstChild; // most recent tweet
+    var mrt = $("list").firstChild; // most recent tweet
     var ts = (mrt)?mrt.id:"0";
     localStorage["mrtTs"] = ts;
   }
@@ -110,33 +112,38 @@
       + 'Login required.'
       + 'Visit <b><a id="loginLink" href="http://intra1.synap.co.kr/season2/login.ss?cmd=loginForm">Synapsoft Intra1</a></b> and Login, first.'
       + '</div>';
-    document.getElementById("loginLink").onclick = function(e) {
+    $("loginLink").onclick = function(e) {
 	  chrome.tabs.create({url: e.srcElement.href});
     };
   }
 
   function deleteTweet(id) {
+    console.log("before confirm...");
     if(!confirm("Are you sure you want to delete this tweet?")) {
+      console.log("confirm ok. before return.");
       return;
     }
+    console.log("delete confirmed. now delete mesg.");
     var params = "cmd=delete&timestamp="+id;
     sendRequset(params, function() {
-      var tweet = document.getElementById(id);
+      console.log("request succeeded. delete.");
+      var tweet = $(id);
       tweet.parentNode.removeChild(tweet);
     });
   }
 
   function addDeleteButton() {
     var loginUserId = localStorage["userId"];
-    var deleteLinks = document.getElementsByClassName("deleteLink");
-    for (var i=0; i<deleteLinks.length; i++) {
-      var linkUserId = deleteLinks[i].getAttribute("userId");
+    var deleteButtons = document.getElementsByClassName("delete-button");
+    for (var i=0; i<deleteButtons.length; i++) {
+      var linkUserId = deleteButtons[i].getAttribute("data-userid");
       if (linkUserId != loginUserId) {
-        deleteLinks[i].style.display = "none";
+        deleteButtons[i].style.display = "none";
       } else {
-        if(!deleteLinks[i].onclick) {
-          deleteLinks[i].onclick = function(e) {
-            deleteTweet(e.srcElement.parentNode.parentNode.parentNode.parentNode.id);
+        if(!deleteButtons[i].onclick) {
+          deleteButtons[i].onclick = function(e) {
+            e.preventDefault();
+            setTimeout(function() { deleteTweet(e.srcElement.parentNode.parentNode.parentNode.id); }, 0);
           };
         }
       }
