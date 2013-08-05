@@ -23,7 +23,7 @@
     if (e.keyCode !== 13 || !(e.shiftKey || e.ctrlKey)) { // not Ctrl+Enter or Shift+Enter
       return;
     }
-    tweet();
+    tweet($("tweetMsg").value);
   });
 
   document.addEventListener("click", function(e) {
@@ -60,10 +60,8 @@
     });
   }
  
-  function tweet() {
-    var msg = $("tweetMsg").value,
-        ts = $("list").firstChild.id,
-        params = "blahblah="+encodeURIComponent(msg)+"&recentTimestamp="+ts;
+  function tweet(msg) {
+    var params = "blahblah="+encodeURIComponent(msg)+"&recentTimestamp="+localStorage["mrtTs"];
     sendRequset(params, function (e) {
       try {
         var resJson = JSON.parse(e.srcElement.responseText);
@@ -71,14 +69,14 @@
         renderTweet(resJson.msgList[0]);
         addDeleteButton();
         updateMrtTs();
-        var t = $("tweetMsg");
-        t.blur();
-        t.value = "";
         chrome.browserAction.setBadgeText({text:""});
         chrome.browserAction.setIcon({path: "/images/icon_on.png"});
       } catch (x) {
         showLoginMsg();
       }
+      var t = $("tweetMsg");
+      t.blur();
+      t.value = "";
     });
   }
 
