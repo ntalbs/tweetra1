@@ -50,10 +50,7 @@
         var resJson = JSON.parse(e.srcElement.responseText);
         localStorage["userId"] = resJson.userId;
         renderTweetList(resJson.msgList);
-        addDeleteButton();
-        updateMrtTs();
-        chrome.browserAction.setBadgeText({text:""});
-        chrome.browserAction.setIcon({path: "/images/icon_on.png"});
+        doPostLoadingTasks();
       } catch (x) {
         showLoginMsg();
       }
@@ -67,17 +64,21 @@
         var resJson = JSON.parse(e.srcElement.responseText);
         localStorage["userId"] = resJson.userId;
         renderTweet(resJson.msgList[0]);
-        addDeleteButton();
-        updateMrtTs();
-        chrome.browserAction.setBadgeText({text:""});
-        chrome.browserAction.setIcon({path: "/images/icon_on.png"});
+        doPostLoadingTasks();
       } catch (x) {
         showLoginMsg();
       }
-      var t = $("tweetMsg");
-      t.blur();
-      t.value = "";
     });
+  }
+
+  function doPostLoadingTasks() {
+    chrome.browserAction.setBadgeText({text:""});
+    chrome.browserAction.setIcon({path: "/images/icon_on.png"});    
+    addDeleteButton();
+    updateMrtTs();
+    var t = $("tweetMsg");
+    t.blur();
+    t.value = "";
   }
 
   function renderTweet(tweet) {
