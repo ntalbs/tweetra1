@@ -56,7 +56,7 @@
       }
     });
   }
- 
+
   function tweet(msg) {
     var params = "blahblah="+encodeURIComponent(msg)+"&recentTimestamp="+localStorage["mrtTs"];
     sendRequset(params, function (e) {
@@ -73,7 +73,7 @@
 
   function doPostLoadingTasks() {
     chrome.browserAction.setBadgeText({text:""});
-    chrome.browserAction.setIcon({path: "/images/icon_on.png"});    
+    chrome.browserAction.setIcon({path: "/images/icon_on.png"});
     addDeleteButton();
     updateMrtTs();
     var t = $("tweetMsg");
@@ -117,7 +117,7 @@
       + 'Visit <b><a id="loginLink" href="http://intra1.synap.co.kr/season2/login.ss?cmd=loginForm">Synapsoft Intra1</a></b> and Login, first.'
       + '</div>';
     $("loginLink").onclick = function(e) {
-	  chrome.tabs.create({url: e.srcElement.href});
+      chrome.tabs.create({url: e.srcElement.href});
     };
   }
 
@@ -168,8 +168,8 @@
     }
     var tokenCount = arguments.length - 2;
     for( var token = 0; token <= tokenCount; token++ ) {
-      text = text.replace(new RegExp( "\\{" + token + "\\}", "gi" ),
-						  arguments[ token + 1 ].replace("$", "$$$$") );
+      text = text.replace(new RegExp( "\\{" + token + "\\}", "gi"),
+                          arguments[ token + 1 ].replace("$", "$$$$"));
     }
     return text;
   };
