@@ -1,19 +1,19 @@
 (function() {
-  var tweetFormatStr =
-        '<div class="outerbox" id="{0}">'
-        + '<img class="icon" src="{1}">'
-        + '<div class="msgbox">'
-          + '<div class="header">'
-            + '<span class="userId">{2}</span>'
-            + '&nbsp;'
-            + '<span class="name">{3}</span>'
-            + '&nbsp;'
-            + '<img class="delete-button trashcan" data-userid="{2}" src="http://intra1.synap.co.kr/season2/images/trashcan_icon.gif" alt="delete"/>'
-          + '</div>'
-        + '<div class="msg">{4}</div>'
-        + '<div class="time">{5}</div>'
-        + '</div>'
-      + '</div>';
+  var tweetFormatStr = [
+    '<div class="outerbox" id="{0}">',
+    '  <img class="icon" src="{1}">',
+    '  <div class="msgbox">',
+    '    <div class="header">',
+    '      <span class="userId">{2}</span>',
+    '      &nbsp;',
+    '      <span class="name">{3}</span>',
+    '      &nbsp;',
+    '      <img class="delete-button trashcan" data-userid="{2}" src="http://intra1.synap.co.kr/season2/images/trashcan_icon.gif" alt="delete"/>',
+    '    </div>',
+    '    <div class="msg">{4}</div>',
+    '    <div class="time">{5}</div>',
+    '  </div>',
+    '</div>'].map(function (s) { return s.trim(); }).join('');
 
   loadTweets();
   document.addEventListener("keydown", function(e) {
